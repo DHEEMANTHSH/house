@@ -110,7 +110,6 @@
 </head>
 <body>
 
-  <!-- Connected Navigation -->
   <header>
     <a href="index.html" class="logo">
       <i class="fa-solid fa-house-chimney-user"></i>Home<span>Rent</span>KA
@@ -170,7 +169,6 @@
     </div>
   </div>
 
-  <!-- Auth Modal -->
   <div id="auth-modal" class="modal-overlay">
     <div class="modal-card">
       <button onclick="closeAuthModal()" class="modal-close"><i class="fa-solid fa-xmark"></i></button>
@@ -193,9 +191,11 @@
   </div>
 
   <script>
-    const API_BASE = 'http://localhost:5000/api/properties';
+    // Dynamic API Base URL supporting both Localhost & Render
+    const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+      ? 'http://localhost:5000/api/properties' 
+      : 'https://house-am79.onrender.com/api/properties';
 
-    // REAL-TIME DATA FETCHING ON LOAD
     async function loadFeatured() {
       try {
         const res = await fetch(`${API_BASE}/featured`);
@@ -221,7 +221,7 @@
           grid.innerHTML = '<div class="state-message"><p>No featured properties available right now. Try adding one from the "Add Property" menu!</p></div>';
         }
       } catch(e) {
-        document.getElementById('featured-grid').innerHTML = '<div class="state-message" style="color:#f87171;"><p>Backend server connection error. Make sure your server is running on port 5000.</p></div>';
+        document.getElementById('featured-grid').innerHTML = '<div class="state-message" style="color:#f87171;"><p>Backend server connection error.</p></div>';
       }
     }
 
@@ -239,7 +239,6 @@
       document.getElementById('form-register').style.display = tab === 'register' ? 'block' : 'none';
     }
 
-    // Load live data immediately when the index page opens
     loadFeatured();
   </script>
 </body>

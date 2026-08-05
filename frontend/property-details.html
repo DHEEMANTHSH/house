@@ -70,7 +70,6 @@
 </head>
 <body>
 
-  <!-- Connected Navigation -->
   <header>
     <a href="index.html" class="logo">
       <i class="fa-solid fa-house-chimney-user"></i>Home<span>Rent</span>KA
@@ -89,7 +88,6 @@
     </div>
   </main>
 
-  <!-- Real-Time Payment Modal -->
   <div id="payment-modal" class="modal-overlay">
     <div class="modal-card">
       <button onclick="closePaymentModal()" class="modal-close"><i class="fa-solid fa-xmark"></i></button>
@@ -124,7 +122,11 @@
   </div>
 
   <script>
-    const API_BASE = 'http://localhost:5000/api/properties';
+    // Dynamic API Base URL supporting both Localhost & Render
+    const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+      ? 'http://localhost:5000/api/properties' 
+      : 'https://house-am79.onrender.com/api/properties';
+      
     let currentProperty = null;
 
     async function loadDetails() {
@@ -171,7 +173,7 @@
           container.innerHTML = '<div class="state-message"><p>Property not found.</p></div>';
         }
       } catch (e) {
-        container.innerHTML = '<div class="state-message"><p>Failed to connect to backend server on port 5000.</p></div>';
+        container.innerHTML = '<div class="state-message"><p>Failed to connect to backend server.</p></div>';
       }
     }
 

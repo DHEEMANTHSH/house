@@ -75,7 +75,6 @@
 </head>
 <body>
 
-  <!-- Connected Navigation -->
   <header>
     <a href="index.html" class="logo">
       <i class="fa-solid fa-house-chimney-user"></i>Home<span>Rent</span>KA
@@ -93,7 +92,6 @@
     <div class="glass-card">
       <h2 style="font-size: 2rem; font-weight: 800; margin-bottom: 1.5rem;">All Available Karnataka Properties (Live Data)</h2>
       
-      <!-- Filter Controls -->
       <div class="filter-bar">
         <input type="text" id="filter-search" placeholder="Search by city or keyword...">
         <select id="filter-purpose">
@@ -105,7 +103,6 @@
         <button onclick="fetchProperties()" class="filter-btn"><i class="fa-solid fa-filter"></i> Apply Filters</button>
       </div>
 
-      <!-- Real-Time Property Grid -->
       <div id="properties-grid" class="property-grid">
         <div class="state-message"><i class="fa-solid fa-spinner fa-spin fa-2x" style="color:var(--primary); margin-bottom:1rem;"></i><p>Loading live properties from database...</p></div>
       </div>
@@ -113,15 +110,16 @@
   </main>
 
   <script>
-    const API_BASE = 'http://localhost:5000/api/properties';
+    // Dynamic API Base URL supporting both Localhost & Render
+    const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+      ? 'http://localhost:5000/api/properties' 
+      : 'https://house-am79.onrender.com/api/properties';
 
-    // Handle query params passed from Home search box
     const urlParams = new URLSearchParams(window.location.search);
     if(urlParams.get('location')) {
       document.getElementById('filter-search').value = urlParams.get('location');
     }
 
-    // REAL-TIME DATA FETCHING FOR PROPERTIES PAGE
     async function fetchProperties() {
       const search = document.getElementById('filter-search').value;
       const purpose = document.getElementById('filter-purpose').value;
@@ -163,11 +161,10 @@
           }
         }
       } catch(e) {
-        document.getElementById('properties-grid').innerHTML = '<div class="state-message" style="color:#ef4444;"><p>Could not connect to backend server. Make sure server is running on port 5000.</p></div>';
+        document.getElementById('properties-grid').innerHTML = '<div class="state-message" style="color:#ef4444;"><p>Could not connect to backend server.</p></div>';
       }
     }
 
-    // Load live properties when page opens
     fetchProperties();
   </script>
 </body>

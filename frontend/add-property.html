@@ -57,7 +57,6 @@
     .form-group label { display: block; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.4rem; }
     .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-body); font-size: 0.95rem; outline: none; }
     
-    /* Browse File Custom Styling */
     .file-upload-box {
       border: 2px dashed var(--border);
       padding: 1.5rem;
@@ -144,7 +143,6 @@
           </div>
         </div>
 
-        <!-- Browse Photo File Upload Section -->
         <div class="form-group">
           <label>Browse Photo from Device</label>
           <label class="file-upload-box" for="imageFile">
@@ -176,9 +174,11 @@
   </main>
 
   <script>
-    const API_BASE = 'http://localhost:5000/api/properties';
+    // Dynamic API Base URL supporting both Localhost & Render deployment
+    const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+      ? 'http://localhost:5000/api/properties' 
+      : 'https://house-am79.onrender.com/api/properties';
 
-    // Live preview for selected photo
     function previewImage(event) {
       const file = event.target.files[0];
       if (file) {
@@ -227,7 +227,7 @@
           alert('Failed to add property: ' + result.error);
         }
       } catch (err) {
-        alert('Could not connect to backend server on port 5000.');
+        alert('Could not connect to backend server.');
       }
     }
   </script>
