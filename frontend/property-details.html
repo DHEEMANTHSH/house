@@ -13,6 +13,7 @@
       --primary-light: #e0e7ff;
       --accent: #f59e0b;
       --success: #10b981;
+      --whatsapp: #25D366;
       --text-main: #0f172a;
       --text-muted: #64748b;
       --bg-body: #f8fafc;
@@ -65,8 +66,13 @@
       gap: 2rem;
       align-items: start;
     }
-    .btn-action-card { background: var(--success); color: white; text-align: center; padding: 1rem; border-radius: 8px; text-decoration: none; font-weight: 700; cursor: pointer; border: none; width: 100%; font-size: 1.05rem; display: block; }
+    
+    /* Action Buttons */
+    .btn-action-card { background: var(--success); color: white; text-align: center; padding: 0.9rem; border-radius: 8px; text-decoration: none; font-weight: 700; cursor: pointer; border: none; width: 100%; font-size: 0.95rem; display: block; transition: var(--transition); }
     .btn-action-card:hover { opacity: 0.9; }
+    
+    .btn-secondary-action { background: var(--whatsapp); color: white; text-align: center; padding: 0.9rem; border-radius: 8px; text-decoration: none; font-weight: 700; cursor: pointer; border: none; width: 100%; font-size: 0.95rem; display: block; margin-top: 0.75rem; transition: var(--transition); }
+    .btn-secondary-action:hover { opacity: 0.9; }
 
     .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 2000; align-items: center; justify-content: center; padding: 1rem; }
     .modal-card { background: white; padding: 2rem; border-radius: var(--radius); width: 100%; max-width: 450px; box-shadow: var(--shadow-lg); text-align: left; position: relative; }
@@ -103,6 +109,7 @@
     </div>
   </main>
 
+  <!-- Payment Modal (Option 1: Pay Online Now) -->
   <div id="payment-modal" class="modal-overlay">
     <div class="modal-card">
       <button onclick="closePaymentModal()" class="modal-close"><i class="fa-solid fa-xmark"></i></button>
@@ -131,6 +138,33 @@
         </div>
         <button type="submit" class="btn-submit" style="margin-top: 1rem;">
           <i class="fa-solid fa-lock"></i> Pay Securely & Book Now
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- WhatsApp Inquiry Modal (Option 2: Book Without Online Payment) -->
+  <div id="contact-modal" class="modal-overlay">
+    <div class="modal-card">
+      <button onclick="closeContactModal()" class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+      <h2 style="margin-bottom: 0.5rem; color: var(--whatsapp); font-size: 1.4rem;"><i class="fa-brands fa-whatsapp"></i> Connect via WhatsApp</h2>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.25rem;">Fill in your details below. Clicking send will instantly open WhatsApp to message the owner directly.</p>
+      
+      <form onsubmit="sendWhatsAppInquiry(event)">
+        <div class="form-group">
+          <label>Your Full Name</label>
+          <input type="text" id="buyer-name" placeholder="Pooja Shetty" required>
+        </div>
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="text" id="buyer-phone" placeholder="+91 98765 43210" required>
+        </div>
+        <div class="form-group">
+          <label>Message / Intended Move Date</label>
+          <input type="text" id="buyer-message" placeholder="Looking to move in by next month..." required>
+        </div>
+        <button type="submit" class="btn-submit" style="background: var(--whatsapp); margin-top: 1rem;">
+          <i class="fa-brands fa-whatsapp"></i> Send Details to Owner on WhatsApp
         </button>
       </form>
     </div>
@@ -177,8 +211,14 @@
                 <p style="margin-bottom: 0.5rem; font-size: 0.95rem;"><i class="fa-solid fa-phone"></i> ${p.owner.phone}</p>
                 <p style="margin-bottom: 1.25rem; font-size: 0.95rem;"><i class="fa-solid fa-envelope"></i> ${p.owner.email}</p>
                 
+                <!-- Option 1: Pay Online Now -->
                 <button onclick="openPaymentModal()" class="btn-action-card">
                   <i class="fa-solid fa-credit-card"></i> Book & Pay Online Now
+                </button>
+
+                <!-- Option 2: Reserve via WhatsApp (Contact Owner) -->
+                <button onclick="openContactModal()" class="btn-secondary-action">
+                  <i class="fa-brands fa-whatsapp"></i> Reserve & Contact Owner via WhatsApp
                 </button>
               </div>
             </div>
@@ -191,26 +231,60 @@
       }
     }
 
+    // Payment Modal Controls
     function openPaymentModal() {
       document.getElementById('modal-property-title').innerText = `Booking: ${currentProperty.name} (₹${currentProperty.price}/mo)`;
       document.getElementById('payment-modal').style.display = 'flex';
     }
-
     function closePaymentModal() {
       document.getElementById('payment-modal').style.display = 'none';
     }
-
     function togglePaymentFields() {
       const method = document.getElementById('pay-method').value;
       document.getElementById('upi-field').style.display = method === 'upi' ? 'block' : 'none';
       document.getElementById('card-fields').style.display = method === 'card' ? 'block' : 'none';
     }
-
     function processPayment(e) {
       e.preventDefault();
       alert('Payment Successful! Your house booking and lease agreement have been confirmed.');
       closePaymentModal();
       window.location.href = 'index.html';
+    }
+
+    // WhatsApp Inquiry Modal Controls
+    function openContactModal() {
+      document.getElementById('contact-modal').style.display = 'flex';
+    }
+    function closeContactModal() {
+      document.getElementById('contact-modal').style.display = 'none';
+    }
+    function sendWhatsAppInquiry(e) {
+      e.preventDefault();
+      
+      const buyerName = document.getElementById('buyer-name').value.trim();
+      const buyerPhone = document.getElementById('buyer-phone').value.trim();
+      const buyerMessage = document.getElementById('buyer-message').value.trim();
+
+      let ownerPhone = currentProperty.owner.phone.replace(/[^0-9]/g, '');
+      if (ownerPhone.length === 10) {
+        ownerPhone = '91' + ownerPhone;
+      }
+
+      const messageText = 
+        `Hello ${currentProperty.owner.name},%0A%0A` +
+        `I am interested in your property listed on HomeRent Karnataka!%0A%0A` +
+        `🏠 *Property:* ${currentProperty.name}%0A` +
+        `📍 *Location:* ${currentProperty.location}%0A` +
+        `💰 *Price:* ₹${currentProperty.price}/mo%0A%0A` +
+        `👤 *My Name:* ${buyerName}%0A` +
+        `📞 *My Phone:* ${buyerPhone}%0A` +
+        `💬 *Message:* ${buyerMessage}%0A%0A` +
+        `Please let me know if it is available!`;
+
+      const whatsappURL = `https://wa.me/${ownerPhone}?text=${messageText}`;
+      
+      closeContactModal();
+      window.open(whatsappURL, '_blank');
     }
 
     loadDetails();
