@@ -37,37 +37,42 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1.25rem 6%;
+      padding: 1.25rem 5%;
       position: sticky;
       top: 0;
       z-index: 1000;
+      flex-wrap: wrap;
+      gap: 1rem;
     }
     .logo { font-size: 1.35rem; font-weight: 800; color: var(--white); text-decoration: none; display: flex; align-items: center; }
     .logo span { color: var(--accent); }
     .logo i { color: var(--accent); font-size: 1.5rem; margin-right: 0.5rem; }
-    nav ul { display: flex; list-style: none; gap: 2.5rem; align-items: center; }
+    nav ul { display: flex; list-style: none; gap: 2rem; align-items: center; flex-wrap: wrap; }
     nav a { text-decoration: none; color: #cbd5e1; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: var(--transition); }
     nav a:hover, nav a.active { color: var(--accent); }
     .nav-actions { display: flex; align-items: center; gap: 1rem; }
     .btn-auth-trigger { background: var(--accent); color: var(--text-main); font-weight: 700; padding: 0.6rem 1.25rem; border-radius: var(--radius); border: none; cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; gap: 0.5rem; }
     .btn-auth-trigger:hover { background: #d97706; }
-    .container { max-width: 1280px; margin: 3rem auto; padding: 0 2rem; }
+    
+    .container { max-width: 1280px; margin: 2rem auto; padding: 0 1rem; }
     .hero-content { text-align: center; color: white; margin-bottom: 3rem; }
     .welcome-banner {
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.2);
-      padding: 1.25rem 2.5rem;
+      padding: 1.25rem 1.5rem;
       border-radius: 20px;
       display: inline-block;
       margin-bottom: 1.5rem;
       box-shadow: var(--shadow-lg);
+      max-width: 100%;
     }
-    .welcome-banner h2 { font-size: 1.75rem; font-weight: 800; color: #ffffff; display: flex; align-items: center; justify-content: center; gap: 0.75rem; }
+    .welcome-banner h2 { font-size: 1.35rem; font-weight: 800; color: #ffffff; display: flex; align-items: center; justify-content: center; gap: 0.5rem; flex-wrap: wrap; }
     .welcome-banner h2 i { color: var(--accent); }
-    .welcome-banner p { font-size: 1.05rem; color: #cbd5e1; margin-top: 0.35rem; }
-    .hero-content h1 { font-size: 3rem; font-weight: 800; margin-bottom: 1rem; color: white; letter-spacing: -1px; }
-    .hero-content p.subtitle { font-size: 1.15rem; color: #cbd5e1; margin-bottom: 2rem; }
+    .welcome-banner p { font-size: 0.95rem; color: #cbd5e1; margin-top: 0.35rem; }
+    .hero-content h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 1rem; color: white; letter-spacing: -1px; }
+    .hero-content p.subtitle { font-size: 1.05rem; color: #cbd5e1; margin-bottom: 2rem; }
+    
     .search-card {
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(10px);
@@ -82,30 +87,43 @@
     }
     .search-field { display: flex; flex-direction: column; text-align: left; padding: 0.5rem 1rem; background: var(--bg-body); border-radius: 10px; border: 1px solid transparent; }
     .search-field label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.2rem; }
-    .search-field input, .search-field select { border: none; background: transparent; font-size: 0.95rem; font-weight: 600; color: var(--text-main); outline: none; }
-    .search-btn { background-color: var(--primary); color: var(--white); border: none; border-radius: 10px; font-weight: 700; padding: 0 2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: var(--transition); }
+    .search-field input, .search-field select { border: none; background: transparent; font-size: 0.95rem; font-weight: 600; color: var(--text-main); outline: none; width: 100%; }
+    .search-btn { background-color: var(--primary); color: var(--white); border: none; border-radius: 10px; font-weight: 700; padding: 0.75rem 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: var(--transition); }
     .search-btn:hover { background-color: var(--primary-hover); }
-    .property-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2rem; margin-top: 2rem; }
+
+    .property-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
     .property-card { background: var(--white); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); box-shadow: var(--shadow-md); display: flex; flex-direction: column; transition: var(--transition); }
     .property-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
     .property-img-wrapper { position: relative; height: 220px; }
     .property-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
-    .price-tag { position: absolute; bottom: 1rem; left: 1rem; background: rgba(15, 23, 42, 0.85); color: white; padding: 0.4rem 0.85rem; border-radius: 8px; font-weight: 700; }
+    .price-tag { position: absolute; bottom: 1rem; left: 1rem; background: rgba(15, 23, 42, 0.85); color: white; padding: 0.4rem 0.85rem; border-radius: 8px; font-weight: 700; font-size: 0.9rem; }
     .purpose-badge { position: absolute; top: 1rem; right: 1rem; background: var(--primary); color: white; padding: 0.3rem 0.75rem; border-radius: 6px; font-weight: 700; font-size: 0.7rem; text-transform: uppercase; }
-    .property-details-inner { padding: 1.5rem; display: flex; flex-direction: column; flex: 1; }
+    .property-details-inner { padding: 1.25rem; display: flex; flex-direction: column; flex: 1; }
     .btn-action-card { background: var(--primary-light); color: var(--primary); text-align: center; padding: 0.75rem; border-radius: 8px; text-decoration: none; font-weight: 700; margin-top: auto; display: block; }
     .btn-action-card:hover { background: var(--primary); color: white; }
-    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 2000; align-items: center; justify-content: center; }
-    .modal-card { background: white; padding: 2.5rem; border-radius: var(--radius); width: 100%; max-width: 450px; box-shadow: var(--shadow-lg); text-align: left; position: relative; }
+
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 2000; align-items: center; justify-content: center; padding: 1rem; }
+    .modal-card { background: white; padding: 2rem; border-radius: var(--radius); width: 100%; max-width: 450px; box-shadow: var(--shadow-lg); text-align: left; position: relative; }
     .modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.25rem; cursor: pointer; color: var(--text-muted); }
-    .auth-tabs { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 2rem; }
-    .auth-tab { flex: 1; text-align: center; padding: 1rem; font-weight: 700; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+    .auth-tabs { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 1.5rem; }
+    .auth-tab { flex: 1; text-align: center; padding: 0.75rem; font-weight: 700; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; }
     .auth-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
-    .form-group { margin-bottom: 1.25rem; }
-    .form-group label { display: block; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.4rem; }
-    .form-group input { width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border); background: var(--bg-body); border-radius: 8px; font-size: 0.95rem; outline: none; }
-    .btn-submit { width: 100%; background: var(--primary); color: var(--white); border: none; padding: 0.85rem; border-radius: 8px; font-weight: 700; font-size: 1rem; cursor: pointer; }
-    .state-message { text-align: center; padding: 4rem; color: white; font-size: 1.1rem; grid-column: 1/-1; }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.3rem; }
+    .form-group input { width: 100%; padding: 0.7rem; border: 1px solid var(--border); background: var(--bg-body); border-radius: 8px; font-size: 0.95rem; outline: none; }
+    .btn-submit { width: 100%; background: var(--primary); color: var(--white); border: none; padding: 0.8rem; border-radius: 8px; font-weight: 700; font-size: 1rem; cursor: pointer; }
+    .state-message { text-align: center; padding: 3rem 1rem; color: white; font-size: 1.05rem; grid-column: 1/-1; }
+
+    /* Responsive Media Queries */
+    @media (max-width: 900px) {
+      .search-card {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+      }
+      .hero-content h1 { font-size: 1.8rem; }
+      header { padding: 1rem; justify-content: center; }
+      nav ul { justify-content: center; gap: 1.2rem; }
+    }
   </style>
 </head>
 <body>
@@ -122,7 +140,7 @@
       </ul>
     </nav>
     <div class="nav-actions">
-      <button onclick="openAuthModal()" class="btn-auth-trigger"><i class="fa-solid fa-user-circle"></i> Sign In / Register</button>
+      <button onclick="openAuthModal()" class="btn-auth-trigger"><i class="fa-solid fa-user-circle"></i> Sign In</button>
     </div>
   </header>
 
@@ -163,7 +181,7 @@
       </div>
     </div>
 
-    <h2 style="color: white; margin-bottom: 1.5rem; font-size: 2rem;">Featured Karnataka Houses (Live Data)</h2>
+    <h2 style="color: white; margin-bottom: 1.5rem; font-size: 1.6rem;">Featured Karnataka Houses (Live Data)</h2>
     <div id="featured-grid" class="property-grid">
       <div class="state-message"><i class="fa-solid fa-spinner fa-spin fa-2x"></i><p>Loading live properties from database...</p></div>
     </div>
@@ -191,7 +209,6 @@
   </div>
 
   <script>
-    // Dynamic API Base URL supporting both Localhost & Render
     const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
       ? 'http://localhost:5000/api/properties' 
       : 'https://house-am79.onrender.com/api/properties';
@@ -211,8 +228,8 @@
                 <div class="price-tag">₹${p.price} <span>/ mo</span></div>
               </div>
               <div class="property-details-inner">
-                <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.3rem;">${p.name}</h3>
-                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;"><i class="fa-solid fa-location-dot" style="color:var(--primary);"></i> ${p.location}, Karnataka</p>
+                <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 0.3rem;">${p.name}</h3>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;"><i class="fa-solid fa-location-dot" style="color:var(--primary);"></i> ${p.location}, Karnataka</p>
                 <a href="property-details.html?id=${p._id}" class="btn-action-card">View Details & Book</a>
               </div>
             </div>
