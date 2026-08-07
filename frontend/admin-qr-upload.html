@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setup QR — HomeRent Karnataka</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --accent: #f59e0b;
+      --success: #10b981;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --bg-body: #f8fafc;
+      --white: #ffffff;
+      --border: #e2e8f0;
+      --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+      --radius: 12px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body {
+      color: var(--text-main);
+      background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.85)), url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c') center/cover fixed no-repeat;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    header {
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 5%;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .logo { font-size: 1.35rem; font-weight: 800; color: var(--white); text-decoration: none; display: flex; align-items: center; }
+    .logo span { color: var(--accent); }
+    .logo i { color: var(--accent); font-size: 1.5rem; margin-right: 0.5rem; }
+    nav ul { display: flex; list-style: none; gap: 2rem; align-items: center; flex-wrap: wrap; }
+    nav a { text-decoration: none; color: #cbd5e1; font-weight: 600; font-size: 0.95rem; }
+    nav a:hover, nav a.active { color: var(--accent); }
+
+    .container { max-width: 600px; margin: 3rem auto; padding: 0 1rem; }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(16px);
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: var(--shadow-lg);
+      text-align: center;
+    }
+    .form-group { margin-bottom: 1.5rem; text-align: left; }
+    .form-group label { display: block; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem; }
+    .form-group input[type="file"] { width: 100%; padding: 0.75rem; border: 2px dashed var(--border); background: var(--bg-body); border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+    
+    .btn-submit { width: 100%; background: var(--primary); color: white; border: none; padding: 0.85rem; border-radius: 8px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: 0.2s; }
+    .btn-submit:hover { background: var(--primary-hover); }
+
+    .qr-preview-box { margin-top: 1.5rem; padding: 1rem; background: var(--bg-body); border-radius: 8px; border: 1px solid var(--border); }
+    .qr-preview-box img { max-width: 180px; max-height: 180px; object-fit: contain; border-radius: 6px; margin-top: 0.5rem; display: none; margin-left: auto; margin-right: auto; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="logo">
+      <i class="fa-solid fa-house-chimney-user"></i>Home<span>Rent</span>KA
+    </a>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="properties.html">Properties</a></li>
+        <li><a href="add-property.html">Add Houses</a></li>
+        <li><a href="admin-qr-upload.html" class="active"><i class="fa-solid fa-qrcode"></i> Setup QR</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div class="glass-card">
+      <div style="font-size: 2.5rem; color: var(--primary); margin-bottom: 0.5rem;"><i class="fa-solid fa-qrcode"></i></div>
+      <h2 style="margin-bottom: 0.5rem; font-size: 1.5rem; font-weight: 800;">Company Payment QR Setup</h2>
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Upload your official payment QR code image. Once uploaded, it will instantly sync and appear in the checkout payment box for users.</p>
+
+      <form id="qrForm" onsubmit="uploadQRCode(event)">
+        <div class="form-group">
+          <label>Select QR Image File</label>
+          <input type="file" id="qrFileInput" accept="image/*" required>
+        </div>
+        <button type="submit" class="btn-submit">
+          <i class="fa-solid fa-cloud-arrow-up"></i> Save & Update QR Code
+        </button>
+      </form>
+
+      <div class="qr-preview-box">
+        <label style="display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem;">Current Active QR Preview</label>
+        <img id="currentQrPreview" src="" alt="Active QR Code" />
+        <p id="noQrMsg" style="font-size: 0.85rem; color: var(--text-muted);">No QR code currently uploaded.</p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function loadExistingQR() {
+      const savedQR = localStorage.getItem("companyPaymentQR");
+      const imgElem = document.getElementById('currentQrPreview');
+      const noMsg = document.getElementById('noQrMsg');
+
+      if (savedQR) {
+        imgElem.src = savedQR;
+        imgElem.style.display = 'block';
+        noMsg.style.display = 'none';
+      } else {
+        imgElem.style.display = 'none';
+        noMsg.style.display = 'block';
+      }
+    }
+
+    function uploadQRCode(e) {
+      e.preventDefault();
+      const fileInput = document.getElementById('qrFileInput');
+      const file = fileInput.files[0];
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const base64String = event.target.result;
+          
+          // Saves locally so the checkout modal automatically detects and displays it
+          localStorage.setItem("companyPaymentQR", base64String);
+
+          alert('Company Payment QR Code updated successfully!');
+          loadExistingQR();
+          fileInput.value = '';
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    loadExistingQR();
+  </script>
+</body>
+</html>

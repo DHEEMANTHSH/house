@@ -10,6 +10,7 @@ const propertySchema = new mongoose.Schema({
   bedrooms: { type: Number, required: true },
   bathrooms: { type: Number, required: true },
   images: [{ type: String }],
+  
   amenities: [{ type: String }],
   isFeatured: { type: Boolean, default: false },
   owner: {

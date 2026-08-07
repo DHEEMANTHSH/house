@@ -54,12 +54,16 @@ exports.getFeaturedProperties = async (req, res) => {
   }
 };
 
-// @desc    Create a new property with Base64 image data stored in MongoDB
+// @desc    Create a new property with multiple Cloudinary image URLs (1 to 6 images)
 exports.createProperty = async (req, res) => {
   try {
-    let imageBase64 = '';
-    if (req.file) {
-      imageBase64 = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+    let imageUrls = [];
+    if (req.files && Array.isArray(req.files) && req.files.length > 0) {
+      imageUrls = req.files.map(file => file.path || file.secure_url);
+    } else if (req.file) {
+      imageUrls = [req.file.path || req.file.secure_url];
+    } else {
+      imageUrls = ['https://images.unsplash.com/photo-1600596542815-ffad4c1539a9'];
     }
 
     const propertyData = {
@@ -71,7 +75,7 @@ exports.createProperty = async (req, res) => {
       purpose: req.body.purpose || 'Rent',
       bedrooms: Number(req.body.bedrooms),
       bathrooms: Number(req.body.bathrooms),
-      images: [imageBase64],
+      images: imageUrls,
       amenities: ["Parking", "Water Supply", "Security"],
       isFeatured: req.body.isFeatured === 'true' || req.body.isFeatured === true,
       owner: {
@@ -82,9 +86,10 @@ exports.createProperty = async (req, res) => {
     };
 
     const newProperty = await Property.create(propertyData);
-    res.status(201).json({ success: true, data: newProperty });
+    return res.status(201).json({ success: true, data: newProperty });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    console.error("Property creation error:", error);
+    return res.status(500).json({ success: false, error: error.message });
   }
 };
 
