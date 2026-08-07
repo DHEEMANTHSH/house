@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Property Details —Mitari Smart Home Rent</title>
+  <title>Property Details — Mitari Smart Home Rent</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -109,7 +109,7 @@
     </div>
   </main>
 
-  <!-- Payment Modal (Option 1: Pay Online Now with QR & WhatsApp Confirmation) -->
+  <!-- Payment Modal -->
   <div id="payment-modal" class="modal-overlay">
     <div class="modal-card">
       <button onclick="closePaymentModal()" class="modal-close"><i class="fa-solid fa-xmark"></i></button>
@@ -158,7 +158,7 @@
     </div>
   </div>
 
-  <!-- WhatsApp Inquiry Modal (Option 2: Book Without Online Payment) -->
+  <!-- WhatsApp Inquiry Modal -->
   <div id="contact-modal" class="modal-overlay">
     <div class="modal-card">
       <button onclick="closeContactModal()" class="modal-close"><i class="fa-solid fa-xmark"></i></button>
@@ -198,7 +198,7 @@
       const container = document.getElementById('property-details-container');
 
       if (!id) {
-        container.innerHTML = '<div class="state-message"><p>Invalid Property ID specified.</p></div>';
+        container.innerHTML = '<div class="state-message"><p>Invalid Property ID specified. Please go back and select a property.</p></div>';
         return;
       }
 
@@ -249,7 +249,7 @@
                   <i class="fa-solid fa-credit-card"></i> Book & Pay Online Now
                 </button>
 
-                <!-- Option 2: Reserve via WhatsApp (Contact Owner) -->
+                <!-- Option 2: Reserve via WhatsApp -->
                 <button onclick="openContactModal()" class="btn-secondary-action">
                   <i class="fa-brands fa-whatsapp"></i> Reserve & Contact Owner via WhatsApp
                 </button>
@@ -264,36 +264,51 @@
       }
     }
 
-    // Payment Modal Controls with QR code loading
-    function openPaymentModal() {
+    // Fetch and display global QR code in checkout modal
+    async function openPaymentModal() {
       document.getElementById('modal-property-title').innerText = `Booking: ${currentProperty.name} (₹${currentProperty.price}/mo)`;
       
-      // Load saved company payment QR code if available
-      const savedQR = localStorage.getItem("companyPaymentQR");
       const qrImage = document.getElementById('modal-company-qr');
       const noQrWarning = document.getElementById('no-qr-warning');
-      
-      if (savedQR) {
-        qrImage.src = savedQR;
-        qrImage.style.display = 'block';
-        noQrWarning.style.display = 'none';
-      } else {
+
+      try {
+        const res = await fetch(API_BASE);
+        const result = await res.json();
+
+        if (result.success && result.data && result.data.length > 0) {
+          const qrItem = result.data.reverse().find(p => p.propertyType === 'QR_CODE' || p.name === 'GLOBAL_PAYMENT_QR');
+          
+          if (qrItem && qrItem.images && qrItem.images.length > 0) {
+            qrImage.src = qrItem.images[0];
+            qrImage.style.display = 'block';
+            noQrWarning.style.display = 'none';
+          } else {
+            qrImage.style.display = 'none';
+            noQrWarning.style.display = 'block';
+          }
+        } else {
+          qrImage.style.display = 'none';
+          noQrWarning.style.display = 'block';
+        }
+      } catch (err) {
         qrImage.style.display = 'none';
         noQrWarning.style.display = 'block';
       }
 
       document.getElementById('payment-modal').style.display = 'flex';
     }
+
     function closePaymentModal() {
       document.getElementById('payment-modal').style.display = 'none';
     }
+
     function togglePaymentFields() {
       const method = document.getElementById('pay-method').value;
       document.getElementById('upi-field').style.display = method === 'upi' ? 'block' : 'none';
       document.getElementById('card-fields').style.display = method === 'card' ? 'block' : 'none';
     }
     
-    // Process Payment & Send Automated WhatsApp Message to Owner
+    // Process Payment & Send WhatsApp Message
     function processPayment(e) {
       e.preventDefault();
       
@@ -310,7 +325,7 @@
       const confirmationText = 
         `🚨 *NEW ONLINE BOOKING & PAYMENT* 🚨%0A%0A` +
         `Hello ${currentProperty.owner.name},%0A` +
-        `A customer has successfully booked your property through HomeRent Karnataka!%0A%0A` +
+        `A customer has successfully booked your property through Mitari Smart Home Rent!%0A%0A` +
         `🏠 *Property:* ${currentProperty.name}%0A` +
         `📍 *Location:* ${currentProperty.location}%0A` +
         `💰 *Amount Paid:* ₹${currentProperty.price}/mo%0A%0A` +
@@ -325,7 +340,6 @@
       alert('Payment Successful! Your house booking has been confirmed and details have been sent to the owner via WhatsApp.');
       closePaymentModal();
       
-      // Open WhatsApp to instantly send confirmation message to the owner
       window.open(whatsappURL, '_blank');
       window.location.href = 'index.html';
     }
@@ -351,7 +365,7 @@
 
       const messageText = 
         `Hello ${currentProperty.owner.name},%0A%0A` +
-        `I am interested in your property listed on HomeRent Karnataka!%0A%0A` +
+        `I am interested in your property listed on Mitari Smart Home Rent!%0A%0A` +
         `🏠 *Property:* ${currentProperty.name}%0A` +
         `📍 *Location:* ${currentProperty.location}%0A` +
         `💰 *Price:* ₹${currentProperty.price}/mo%0A%0A` +

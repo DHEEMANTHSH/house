@@ -49,7 +49,6 @@ app.post('/api/company/login', async (req, res) => {
   try {
     const { username, password } = req.body;
     
-    // Directly query the native MongoDB 'companies' collection
     const db = mongoose.connection.db;
     const company = await db.collection('companies').findOne({ 
       $or: [{ email: username }, { companyName: username }, { username: username }] 
@@ -93,6 +92,40 @@ app.post('/api/company/register', async (req, res) => {
       message: 'Company registered successfully', 
       data: { _id: result.insertedId, ...newCompanyData } 
     });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ==========================================
+// GLOBAL PAYMENT QR CODE ENDPOINTS (FIXED)
+// ==========================================
+
+// 1. Save or Update Global Payment QR Code URL
+app.post('/api/company/qr', async (req, res) => {
+  try {
+    const { qrUrl } = req.body;
+    const db = mongoose.connection.db;
+    
+    await db.collection('settings').updateOne(
+      { key: 'globalPaymentQR' },
+      { $set: { value: qrUrl, updatedAt: new Date() } },
+      { upsert: true }
+    );
+
+    res.json({ success: true, message: 'QR Code updated globally!', qrUrl });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// 2. Fetch Global Payment QR Code for Customer Checkout
+app.get('/api/company/qr', async (req, res) => {
+  try {
+    const db = mongoose.connection.db;
+    const setting = await db.collection('settings').findOne({ key: 'globalPaymentQR' });
+    
+    res.json({ success: true, qrUrl: setting ? setting.value : '' });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }

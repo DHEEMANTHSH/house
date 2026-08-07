@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Setup QR — HomeRent Karnataka</title>
+  <title>Setup QR — Mitari Smart Home Rent</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -72,7 +72,7 @@
 
   <header>
     <a href="index.html" class="logo">
-      <i class="fa-solid fa-house-chimney-user"></i>Home<span>Rent</span>KA
+      <i class="fa-solid fa-house-chimney-user"></i><span>Mitari Smart Home Rent</span>
     </a>
     <nav>
       <ul>
@@ -88,60 +88,117 @@
     <div class="glass-card">
       <div style="font-size: 2.5rem; color: var(--primary); margin-bottom: 0.5rem;"><i class="fa-solid fa-qrcode"></i></div>
       <h2 style="margin-bottom: 0.5rem; font-size: 1.5rem; font-weight: 800;">Company Payment QR Setup</h2>
-      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Upload your official payment QR code image. Once uploaded, it will instantly sync and appear in the checkout payment box for users.</p>
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Upload your official payment QR code image to sync globally across all customer devices.</p>
 
       <form id="qrForm" onsubmit="uploadQRCode(event)">
         <div class="form-group">
           <label>Select QR Image File</label>
-          <input type="file" id="qrFileInput" accept="image/*" required>
+          <input type="file" id="qrFileInput" accept="image/*" required onchange="previewFile(event)">
         </div>
         <button type="submit" class="btn-submit">
-          <i class="fa-solid fa-cloud-arrow-up"></i> Save & Update QR Code
+          <i class="fa-solid fa-cloud-arrow-up"></i> Save & Update QR Code Globally
         </button>
       </form>
 
       <div class="qr-preview-box">
         <label style="display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem;">Current Active QR Preview</label>
         <img id="currentQrPreview" src="" alt="Active QR Code" />
-        <p id="noQrMsg" style="font-size: 0.85rem; color: var(--text-muted);">No QR code currently uploaded.</p>
+        <p id="noQrMsg" style="font-size: 0.85rem; color: var(--text-muted);">Loading active QR code...</p>
       </div>
     </div>
   </main>
 
   <script>
-    function loadExistingQR() {
-      const savedQR = localStorage.getItem("companyPaymentQR");
-      const imgElem = document.getElementById('currentQrPreview');
-      const noMsg = document.getElementById('noQrMsg');
+    const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+      ? 'http://localhost:5000/api/properties' 
+      : 'https://house-am79.onrender.com/api/properties';
 
-      if (savedQR) {
-        imgElem.src = savedQR;
-        imgElem.style.display = 'block';
-        noMsg.style.display = 'none';
-      } else {
-        imgElem.style.display = 'none';
-        noMsg.style.display = 'block';
+    function previewFile(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('currentQrPreview').src = e.target.result;
+          document.getElementById('currentQrPreview').style.display = 'block';
+          document.getElementById('noQrMsg').style.display = 'none';
+        }
+        reader.readAsDataURL(file);
       }
     }
 
-    function uploadQRCode(e) {
+    async function loadExistingQR() {
+      const imgElem = document.getElementById('currentQrPreview');
+      const noMsg = document.getElementById('noQrMsg');
+
+      try {
+        const res = await fetch(API_BASE);
+        const result = await res.json();
+
+        if (result.success && result.data && result.data.length > 0) {
+          // Find the specific QR code entry tagged with propertyType: 'QR_CODE'
+          const qrItem = result.data.reverse().find(p => p.propertyType === 'QR_CODE' || p.name === 'GLOBAL_PAYMENT_QR');
+          
+          if (qrItem && qrItem.images && qrItem.images.length > 0) {
+            imgElem.src = qrItem.images[0];
+            imgElem.style.display = 'block';
+            noMsg.style.display = 'none';
+          } else {
+            imgElem.style.display = 'none';
+            noMsg.style.display = 'block';
+            noMsg.innerText = 'No QR code uploaded yet.';
+          }
+        }
+      } catch (err) {
+        noMsg.innerText = 'Error loading preview.';
+      }
+    }
+
+    async function uploadQRCode(e) {
       e.preventDefault();
       const fileInput = document.getElementById('qrFileInput');
       const file = fileInput.files[0];
+      if (!file) return;
 
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-          const base64String = event.target.result;
-          
-          // Saves locally so the checkout modal automatically detects and displays it
-          localStorage.setItem("companyPaymentQR", base64String);
+      const submitBtn = e.target.querySelector('button');
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'Uploading Qr Code...';
 
-          alert('Company Payment QR Code updated successfully!');
-          loadExistingQR();
+      try {
+        const formData = new FormData();
+        formData.append('name', 'GLOBAL_PAYMENT_QR');
+        formData.append('description', 'Global payment QR code');
+        formData.append('price', '1');
+        formData.append('location', 'Global');
+        formData.append('propertyType', 'QR_CODE'); // Special tag to keep it hidden from properties page
+        formData.append('purpose', 'Rent');
+        formData.append('bedrooms', '1');
+        formData.append('bathrooms', '1');
+        formData.append('isFeatured', 'false');
+        formData.append('ownerName', 'Admin');
+        formData.append('ownerPhone', '+919999999999');
+        formData.append('ownerEmail', 'admin@mitari.com');
+        formData.append('images', file);
+
+        const token = localStorage.getItem('company_token') || 'company-auth-token-xyz';
+        const res = await fetch(API_BASE, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: formData
+        });
+
+        const result = await res.json();
+        if (res.ok && result.success) {
+          alert('QR Code updated successfully');
           fileInput.value = '';
-        };
-        reader.readAsDataURL(file);
+          loadExistingQR();
+        } else {
+          alert('Failed to update QR code.');
+        }
+      } catch (err) {
+        alert('Server connection error.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'Save & Update QR Code Globally';
       }
     }
 
