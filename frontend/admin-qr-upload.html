@@ -113,6 +113,10 @@
       ? 'http://localhost:5000/api/properties' 
       : 'https://house-am79.onrender.com/api/properties';
 
+    // Cloudinary Credentials
+    const CLOUDINARY_CLOUD_NAME = 'ychibp8r';
+    const CLOUDINARY_PRESET = 'ml_default';
+
     function previewFile(event) {
       const file = event.target.files[0];
       if (file) {
@@ -135,7 +139,6 @@
         const result = await res.json();
 
         if (result.success && result.data && result.data.length > 0) {
-          // Find the specific QR code entry tagged with propertyType: 'QR_CODE'
           const qrItem = result.data.reverse().find(p => p.propertyType === 'QR_CODE' || p.name === 'GLOBAL_PAYMENT_QR');
           
           if (qrItem && qrItem.images && qrItem.images.length > 0) {
@@ -161,41 +164,62 @@
 
       const submitBtn = e.target.querySelector('button');
       submitBtn.disabled = true;
-      submitBtn.innerText = 'Uploading Qr Code...';
+      submitBtn.innerText = 'Uploading QR Code...';
 
       try {
-        const formData = new FormData();
-        formData.append('name', 'GLOBAL_PAYMENT_QR');
-        formData.append('description', 'Global payment QR code');
-        formData.append('price', '1');
-        formData.append('location', 'Global');
-        formData.append('propertyType', 'QR_CODE'); // Special tag to keep it hidden from properties page
-        formData.append('purpose', 'Rent');
-        formData.append('bedrooms', '1');
-        formData.append('bathrooms', '1');
-        formData.append('isFeatured', 'false');
-        formData.append('ownerName', 'Admin');
-        formData.append('ownerPhone', '+919999999999');
-        formData.append('ownerEmail', 'admin@mitari.com');
-        formData.append('images', file);
+        const cloudData = new FormData();
+        cloudData.append('file', file);
+        cloudData.append('upload_preset', CLOUDINARY_PRESET);
+
+        const cloudRes = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+          method: 'POST',
+          body: cloudData
+        });
+        const cloudResult = await cloudRes.json();
+
+        if (!cloudRes.ok) {
+          throw new Error(cloudResult.error?.message || 'Cloudinary upload failed');
+        }
+
+        const imageUrl = cloudResult.secure_url;
+        submitBtn.innerText = 'Saving to Database...';
+
+        const propertyPayload = {
+          name: 'GLOBAL_PAYMENT_QR',
+          description: 'Global payment QR code',
+          price: 1,
+          location: 'Global',
+          propertyType: 'QR_CODE',
+          purpose: 'Rent',
+          bedrooms: 1,
+          bathrooms: 1,
+          isFeatured: false,
+          ownerName: 'Admin',
+          ownerPhone: '+919999999999',
+          ownerEmail: 'admin@mitari.com',
+          images: [imageUrl]
+        };
 
         const token = localStorage.getItem('company_token') || 'company-auth-token-xyz';
         const res = await fetch(API_BASE, {
           method: 'POST',
-          headers: { 'Authorization': `Bearer ${token}` },
-          body: formData
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` 
+          },
+          body: JSON.stringify(propertyPayload)
         });
 
         const result = await res.json();
         if (res.ok && result.success) {
-          alert('QR Code updated successfully');
+          alert('QR Code updated successfully!');
           fileInput.value = '';
           loadExistingQR();
         } else {
-          alert('Failed to update QR code.');
+          alert('Failed to update QR code: ' + (result.error || 'Unknown error'));
         }
       } catch (err) {
-        alert('Server connection error.');
+        alert('Upload error: ' + err.message);
       } finally {
         submitBtn.disabled = false;
         submitBtn.innerText = 'Save & Update QR Code Globally';

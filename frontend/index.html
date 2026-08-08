@@ -252,7 +252,7 @@
             return `
               <div class="property-card">
                 <div class="property-img-wrapper">
-                  <img src="${p.images[0] || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9'}" alt="${p.name}">
+                  <img src="${(p.images && p.images.length > 0) ? p.images[0] : ''}" alt="${p.name}" onerror="this.style.display='none'">
                   <div class="purpose-badge">${p.purpose || 'Rent / Lease'}</div>
                   <div class="price-tag">₹${p.price} <span>/ mo</span></div>
                 </div>

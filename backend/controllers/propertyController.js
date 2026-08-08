@@ -58,12 +58,14 @@ exports.getFeaturedProperties = async (req, res) => {
 exports.createProperty = async (req, res) => {
   try {
     let imageUrls = [];
-    if (req.files && Array.isArray(req.files) && req.files.length > 0) {
+    if (req.body.images && Array.isArray(req.body.images) && req.body.images.length > 0) {
+      imageUrls = req.body.images;
+    } else if (req.files && Array.isArray(req.files) && req.files.length > 0) {
       imageUrls = req.files.map(file => file.path || file.secure_url);
     } else if (req.file) {
       imageUrls = [req.file.path || req.file.secure_url];
     } else {
-      imageUrls = ['https://images.unsplash.com/photo-1600596542815-ffad4c1539a9'];
+      imageUrls = [];
     }
 
     const propertyData = {
