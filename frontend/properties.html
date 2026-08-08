@@ -25,8 +25,7 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
     body {
       color: var(--text-main);
-      background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.85)), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa') center/cover fixed no-repeat;
-      min-height: 100vh;
+      background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.85)), url('./images/home-banner.jpg') center / cover fixed no-repeat;
       line-height: 1.6;
     }
     header {
@@ -214,7 +213,7 @@
       <div class="filter-box">
         <span class="filter-label"><i class="fa-solid fa-handshake"></i> PURPOSE</span>
         <select id="purpose-select" class="filter-select">
-          <option value="">Rent & Lease</option>
+          <option value="">All Purpose</option>
           <option value="Rent">Rent</option>
           <option value="Lease">Lease</option>
         </select>
@@ -268,7 +267,7 @@
           const properties = result.data.filter(p => p.name !== 'GLOBAL_PAYMENT_QR' && p.propertyType !== 'QR_CODE');
 
           if (properties.length === 0) {
-            grid.innerHTML = '<div class="state-message"><p>No properties match your filter criteria.</p></div>';
+            grid.innerHTML = '<div class="state-message"><p>No Houses Available</p></div>';
             return;
           }
 
