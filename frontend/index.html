@@ -236,21 +236,33 @@
       `;
     }
 
-    async function loadFeatured() {
+    async function loadFeatured(searchQuery = '', propertyType = '', purpose = '') {
       try {
-        const res = await fetch(`${API_BASE}/featured`);
+        let url = new URL(API_BASE);
+        if (searchQuery) url.searchParams.append('search', searchQuery);
+        if (propertyType) url.searchParams.append('propertyType', propertyType);
+        if (purpose) url.searchParams.append('purpose', purpose);
+
+        const res = await fetch(url.toString());
         const result = await res.json();
         const grid = document.getElementById('featured-grid');
         const isLoggedIn = localStorage.getItem('company_token');
         
         if(result.success && result.data.length > 0) {
-          grid.innerHTML = result.data.map(p => {
+          const properties = result.data.filter(p => p.name !== 'GLOBAL_PAYMENT_QR' && p.propertyType !== 'QR_CODE');
+
+          if(properties.length === 0) {
+            grid.innerHTML = '<div class="state-message"><p>No houses match your search criteria.</p></div>';
+            return;
+          }
+
+          grid.innerHTML = properties.map(p => {
             const deleteBtnHtml = isLoggedIn 
               ? `<button onclick="deleteProperty('${p._id}')" style="background: var(--danger); color: white; border: none; padding: 0.6rem; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 0.5rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem;"><i class="fa-solid fa-trash"></i> Delete House</button>` 
               : '';
 
             return `
-              <div class="property-card">
+              <div class="property-card" id="card-${p._id}">
                 <div class="property-img-wrapper">
                   <img src="${(p.images && p.images.length > 0) ? p.images[0] : ''}" alt="${p.name}" onerror="this.style.display='none'">
                   <div class="purpose-badge">${p.purpose || 'Rent / Lease'}</div>
@@ -266,7 +278,7 @@
             `;
           }).join('');
         } else {
-          grid.innerHTML = '<div class="state-message"><p>No featured properties available right now. Try logging into the Company Portal to add one!</p></div>';
+          grid.innerHTML = '<div class="state-message"><p>No properties available right now.</p></div>';
         }
       } catch(e) {
         document.getElementById('featured-grid').innerHTML = '<div class="state-message" style="color:#f87171;"><p>Backend server connection error.</p></div>';
@@ -286,8 +298,8 @@
         });
         const result = await res.json();
         if (result.success) {
-          alert('House deleted successfully!');
-          loadFeatured(); // Refresh the grid
+          const card = document.getElementById(`card-${id}`);
+          if (card) card.remove();
         } else {
           alert(result.error || 'Failed to delete property.');
         }
@@ -297,8 +309,10 @@
     }
 
     function executeSearch() {
-      const loc = document.getElementById('home-search-loc').value;
-      window.location.href = `properties.html?location=${encodeURIComponent(loc)}`;
+      const loc = document.getElementById('home-search-loc').value.trim();
+      const type = document.getElementById('home-search-type').value;
+      const purpose = document.getElementById('home-search-purpose').value;
+      loadFeatured(loc, type, purpose);
     }
 
     // Company Login Modal Controllers

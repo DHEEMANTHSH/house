@@ -165,13 +165,14 @@
     
     .card-actions {
       display: flex;
+      flex-direction: column;
       gap: 0.75rem;
       margin-top: auto;
     }
-    .btn-details { flex: 1; background: var(--primary); color: white; text-align: center; padding: 0.75rem; border-radius: 8px; text-decoration: none; font-weight: 700; transition: 0.2s; display: block; }
-    .btn-details:hover { background: var(--primary-hover); }
+    .btn-details { background: #e0e7ff; color: #4338ca; text-align: center; padding: 0.75rem; border-radius: 8px; text-decoration: none; font-weight: 700; transition: 0.2s; display: block; }
+    .btn-details:hover { background: #c7d2fe; }
     
-    .btn-delete { background: var(--danger); color: white; border: none; padding: 0.75rem 1rem; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+    .btn-delete { background: var(--danger); color: white; border: none; padding: 0.75rem; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; display: none; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; }
     .btn-delete:hover { background: var(--danger-hover); }
     
     .state-message { text-align: center; padding: 4rem 1rem; color: var(--white); font-size: 1.1rem; grid-column: 1 / -1; }
@@ -192,7 +193,7 @@
   </header>
 
   <main class="container">
-    <h1 class="page-title">Available Houses for Rent</h1>
+    <h1 class="page-title">Available Houses</h1>
     
     <div class="filter-wrapper">
       <div class="filter-box">
@@ -204,9 +205,9 @@
         <span class="filter-label"><i class="fa-solid fa-city"></i> CATEGORY</span>
         <select id="category-select" class="filter-select">
           <option value="">All Categories</option>
-          <option value="Apartment">Apartment</option>
-          <option value="House">House</option>
-          <option value="Villa">Villa</option>
+          <option value="1BHK">1BHK</option>
+          <option value="2BHK">2BHK</option>
+          <option value="3BHK">3BHK</option>
         </select>
       </div>
 
@@ -215,7 +216,7 @@
         <select id="purpose-select" class="filter-select">
           <option value="">Rent & Lease</option>
           <option value="Rent">Rent</option>
-          <option value="Sale">Sale</option>
+          <option value="Lease">Lease</option>
         </select>
       </div>
 
@@ -236,6 +237,9 @@
     const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
       ? 'http://localhost:5000/api/properties' 
       : 'https://house-am79.onrender.com/api/properties';
+
+    // Check if current user is admin/owner to display delete button
+    const isAdmin = localStorage.getItem('is_admin') === 'true' || localStorage.getItem('company_token') !== null;
 
     async function loadProperties() {
       const grid = document.getElementById('properties-grid');
@@ -283,8 +287,8 @@
                   <div class="property-price">₹${p.price} <span style="font-size:0.8rem; color:var(--text-muted); font-weight:500;">/ month</span></div>
                   <div class="card-actions">
                     <a href="property-details.html?id=${p._id}" class="btn-details">View Details & Book</a>
-                    <button class="btn-delete" onclick="deleteProperty('${p._id}')" title="Delete Property">
-                      <i class="fa-solid fa-trash-can"></i>
+                    <button class="btn-delete" style="${isAdmin ? 'display:flex;' : 'display:none;'}" onclick="deleteProperty('${p._id}')">
+                      <i class="fa-solid fa-trash-can"></i> Delete House
                     </button>
                   </div>
                 </div>
@@ -302,15 +306,19 @@
     async function deleteProperty(id) {
       if (!confirm('Are you sure you want to delete this property?')) return;
       try {
+        const token = localStorage.getItem('company_token') || '';
         const res = await fetch(`${API_BASE}/${id}`, {
-          method: 'DELETE'
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
         });
         const result = await res.json();
-        if (result.success) {
+        if (res.ok && result.success) {
           const card = document.getElementById(`card-${id}`);
           if (card) card.remove();
         } else {
-          alert('Failed to delete property.');
+          alert(result.error || 'Failed to delete property.');
         }
       } catch (err) {
         alert('Error connecting to server for deletion.');
