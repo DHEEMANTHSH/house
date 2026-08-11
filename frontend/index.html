@@ -46,15 +46,15 @@ body {
   color: var(--text-main);
   background:
     linear-gradient(
-      rgba(255, 255, 255, 0.35),
-      rgba(248, 250, 252, 0.50)
+      rgba(15, 23, 42, 0.45),
+      rgba(15, 23, 42, 0.55)
     ),
     url('./images/home-banner.jpg');
 
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
-  background-attachment: scroll;
+  background-attachment: fixed;
 
   line-height: 1.6;
   overflow-x: hidden;
@@ -63,6 +63,7 @@ body {
 /* Tablets */
 @media (max-width: 1024px) {
   body {
+    background-attachment: scroll;
     background-position: center center;
   }
 }
@@ -70,23 +71,15 @@ body {
 /* Mobile */
 @media (max-width: 768px) {
   body {
-    background:
-      linear-gradient(
-        rgba(255, 255, 255, 0.40),
-        rgba(248, 250, 252, 0.55)
-      ),
-      url('./images/home-banner.jpg');
-
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
     background-attachment: scroll;
+    background-position: center center;
   }
 }
 
 /* Small mobile phones */
 @media (max-width: 480px) {
   body {
+    background-attachment: scroll;
     background-position: center center;
   }
 }
