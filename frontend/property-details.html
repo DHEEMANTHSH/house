@@ -148,18 +148,16 @@
       <form onsubmit="processPayment(event)">
         <div class="form-group">
           <label>Your Full Name</label>
-          <input type="text" id="pay-buyer-name" placeholder="Pooja Shetty" required>
+          <input type="text" id="pay-buyer-name" placeholder="Name" required>
         </div>
         <div class="form-group">
           <label>Your Phone Number</label>
-          <input type="text" id="pay-buyer-phone" placeholder="+91 98765 43210" required>
+          <input type="text" id="pay-buyer-phone" placeholder="Number" required>
         </div>
         <div class="form-group">
           <label>Payment Method</label>
           <select id="pay-method" onchange="togglePaymentFields()">
-            <option value="upi">UPI (GPay / PhonePe / Paytm / QR)</option>
-            <option value="card">Credit / Debit Card</option>
-            <option value="netbanking">Net Banking</option>
+            <option value="qr Code">UPI (GPay / PhonePe / Paytm / QR)</option>
           </select>
         </div>
         <div id="upi-field" class="form-group">
@@ -169,8 +167,6 @@
         <div id="card-fields" style="display: none;">
           <div class="form-group"><label>Card Number</label><input type="text" placeholder="4111 2222 3333 4444"></div>
           <div style="display: flex; gap: 1rem;">
-            <div class="form-group"><label>Expiry</label><input type="text" placeholder="MM/YY"></div>
-            <div class="form-group"><label>CVV</label><input type="password" placeholder="123"></div>
           </div>
         </div>
         <button type="submit" class="btn-submit" style="margin-top: 1rem;">
@@ -345,19 +341,19 @@
       }
 
       const confirmationText = 
-        `🚨 *NEW ONLINE BOOKING & PAYMENT* 🚨%0A%0A` +
-        `Hello ${currentProperty.owner.name},%0A` +
-        `A customer has successfully booked your property through Midari Smart Home Rent!%0A%0A` +
-        `🏠 *Property:* ${currentProperty.name}%0A` +
-        `📍 *Location:* ${currentProperty.location}%0A` +
-        `💰 *Amount Paid:* ₹${currentProperty.price}/mo%0A%0A` +
-        `👤 *Customer Name:* ${buyerName}%0A` +
-        `📞 *Customer Phone:* ${buyerPhone}%0A` +
-        `💳 *Payment Mode:* ${payMethod.toUpperCase()}%0A` +
-        `🔖 *UTR / Transaction ID:* ${utrNumber}%0A%0A` +
+        `🚨 *NEW ONLINE BOOKING & PAYMENT* 🚨\n\n` +
+        `Hello ${currentProperty.owner.name},\n` +
+        `My name is ${buyerName} and I have successfully booked your property through Midari Smart Home Rent!\n\n` +
+        `🏠 *Property:* ${currentProperty.name}\n` +
+        `📍 *Location:* ${currentProperty.location}\n` +
+        `💰 *Amount Paid:* ₹${currentProperty.price}/mo\n\n` +
+        `👤 *Customer Name:* ${buyerName}\n` +
+        `📞 *Customer Phone:* ${buyerPhone}\n` +
+        `💳 *Payment Mode:* ${payMethod.toUpperCase()}\n` +
+        `🔖 *UTR / Transaction ID:* ${utrNumber}\n\n` +
         `✅ Status: Booked Successfully! Please verify and confirm.`;
 
-      const whatsappURL = `https://wa.me/${ownerPhone}?text=${confirmationText}`;
+      const whatsappURL = `https://wa.me/${ownerPhone}?text=${encodeURIComponent(confirmationText)}`;
 
       alert('Payment Successful! Your house booking has been confirmed and details have been sent to the owner via WhatsApp.');
       closePaymentModal();
@@ -386,17 +382,17 @@
       }
 
       const messageText = 
-        `Hello ${currentProperty.owner.name},%0A%0A` +
-        `I am interested in your property listed on Midari Smart Home Rent!%0A%0A` +
-        `🏠 *Property:* ${currentProperty.name}%0A` +
-        `📍 *Location:* ${currentProperty.location}%0A` +
-        `💰 *Price:* ₹${currentProperty.price}/mo%0A%0A` +
-        `👤 *My Name:* ${buyerName}%0A` +
-        `📞 *My Phone:* ${buyerPhone}%0A` +
-        `💬 *Message:* ${buyerMessage}%0A%0A` +
+        `Hello ${currentProperty.owner.name},\n\n` +
+        `I am interested in your property listed on Midari Smart Home Rent!\n\n` +
+        `🏠 *Property:* ${currentProperty.name}\n` +
+        `📍 *Location:* ${currentProperty.location}\n` +
+        `💰 *Price:* ₹${currentProperty.price}/mo\n\n` +
+        `👤 *My Name:* ${buyerName}\n` +
+        `📞 *My Phone:* ${buyerPhone}\n` +
+        `💬 *Message:* ${buyerMessage}\n\n` +
         `Please let me know if it is available!`;
 
-      const whatsappURL = `https://wa.me/${ownerPhone}?text=${messageText}`;
+      const whatsappURL = `https://wa.me/${ownerPhone}?text=${encodeURIComponent(messageText)}`;
       
       closeContactModal();
       window.open(whatsappURL, '_blank');
