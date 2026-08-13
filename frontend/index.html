@@ -4,79 +4,85 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Midari Smart— Home</title>
-  <meta name="google-site-verification" content="homrewwwrent">
+<meta name="google-site-verification" content="homrewwwrent">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --primary: #4f46e5;
-      --primary-hover: #4338ca;
-      --primary-light: #e0e7ff;
-      --accent: #f59e0b;
-      --success: #10b981;
-      --danger: #ef4444;
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --bg-body: #f8fafc;
-      --white: #ffffff;
-      --border: #e2e8f0;
-      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1),
-                   0 2px 4px -2px rgb(0 0 0 / 0.1);
-      --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1),
-                   0 8px 10px -6px rgb(0 0 0 / 0.1);
-      --radius: 12px;
-      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --primary-light: #e0e7ff;
+  --accent: #f59e0b;
+  --success: #10b981;
+  --danger: #ef4444;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --bg-body: #f8fafc;
+  --white: #ffffff;
+  --border: #e2e8f0;
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+               0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+               0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --radius: 12px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
 
-    /* Desktop Background (Landscape Image) */
-    html {
-      width: 100%;
-      min-height: 100%;
-      background: linear-gradient(rgba(15, 23, 42, 0.50), rgba(15, 23, 42, 0.65)), url('./images/home-banner.jpg') no-repeat center center fixed;
-      background-size: cover;
-    }
+html {
+  width: 100%;
+  min-height: 100%;
+}
 
-    body {
-      width: 100%;
-      min-height: 100vh;
-      color: var(--text-main);
-      background: transparent;
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
+body {
+  width: 100%;
+  min-height: 100vh;
+  color: var(--text-main);
+  background:
+    linear-gradient(
+      rgba(15, 23, 42, 0.45),
+      rgba(15, 23, 42, 0.55)
+    ),
+    url('./images/home-banner.png');
 
-    /* Tablets */
-    @media (max-width: 1024px) {
-      html {
-        background-attachment: scroll;
-        background-position: center center;
-        background-size: cover;
-      }
-    }
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 
-    /* Mobile & iPhone Automatic Background Switch (Portrait Image) */
-    @media (max-width: 768px) {
-      html {
-        background: linear-gradient(rgba(15, 23, 42, 0.50), rgba(15, 23, 42, 0.65)), url('./images/home-banner-mobile.jpg') no-repeat center center scroll;
-        background-size: cover;
-      }
-    }
+  line-height: 1.6;
+  overflow-x: hidden;
+}
 
-    /* Small mobile phones */
-    @media (max-width: 480px) {
-      html {
-        background: linear-gradient(rgba(15, 23, 42, 0.50), rgba(15, 23, 42, 0.65)), url('./images/home-banner-mobile.jpg') no-repeat center center scroll;
-        background-size: cover;
-      }
-    }
+/* Tablets */
+@media (max-width: 1024px) {
+  body {
+    background-attachment: scroll;
+    background-position: center center;
+  }
+}
 
+/* Mobile */
+@media (max-width: 768px) {
+  body {
+    background-attachment: scroll;
+    background-position: center center;
+  }
+}
+
+/* Small mobile phones */
+@media (max-width: 480px) {
+  body {
+    background-attachment: scroll;
+    background-position: center center;
+  }
+}
     header {
       background: rgba(15, 23, 42, 0.9);
       backdrop-filter: blur(12px);
@@ -178,6 +184,7 @@
       <ul id="nav-list">
         <li><a href="index.html" class="active">Home</a></li>
         <li><a href="properties.html">Properties</a></li>
+        <!-- Dynamic Company Nav Links injected via script below -->
       </ul>
     </nav>
     <div class="nav-actions">
@@ -256,6 +263,7 @@
       ? 'http://localhost:5000/api' 
       : 'https://house-am79.onrender.com/api';
 
+    // Render dynamic navigation based on company login status
     function updateNavbar() {
       const navList = document.getElementById('nav-list');
       const isLoggedIn = localStorage.getItem('company_token');
@@ -272,6 +280,7 @@
         `;
       }
 
+      // Keep Home and Properties, append dynamic portal option
       navList.innerHTML = `
         <li><a href="index.html" class="active">Home</a></li>
         <li><a href="properties.html">Properties</a></li>
@@ -358,6 +367,7 @@
       loadFeatured(loc, type, purpose);
     }
 
+    // Company Login Modal Controllers
     function openCompanyLoginModal() {
       document.getElementById('company-login-modal').style.display = 'flex';
     }
@@ -380,7 +390,6 @@
         const data = await res.json();
 
         if (data.success) {
-          localStorage.getItem('company_token');
           localStorage.setItem('company_token', data.token);
           window.location.href = 'add-property.html';
         } else {
