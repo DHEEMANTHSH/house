@@ -68,18 +68,7 @@ body {
   width: 100%;
   min-height: 100vh;
   color: var(--text-main);
-  background:
-    linear-gradient(
-      rgba(15, 23, 42, 0.45),
-      rgba(15, 23, 42, 0.55)
-    ),
-    url('./images/home-banner.png');
-
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-
+  background: transparent;
   line-height: 1.6;
   overflow-x: hidden;
 }
@@ -201,6 +190,12 @@ body {
   </style>
 </head>
 <body>
+
+  <!-- Background Video Element -->
+  <video autoplay muted loop playsinline id="bg-video">
+    <source src="./images/video.mp4" type="video/mp4">
+  </video>
+  <div class="video-overlay"></div>
 
   <header>
     <a href="index.html" class="logo">
